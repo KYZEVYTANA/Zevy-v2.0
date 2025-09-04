@@ -20,8 +20,16 @@ def wif_to_address(wif: str) -> str:
     addr = P2PKHAddr.EncodeKey(priv_key_bytes)
     return addr
 
+def ensure_file_exists(file_path: str):
+    """Если файла нет — создаём пустой JSON-массив."""
+    if not os.path.exists(file_path):
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump([], f, ensure_ascii=False, indent=2)
+
 def process_addresses_stream(input_file: str, batch_size: int = 1000):
     """Обрабатывает JSON файл потоково, минимально используя память."""
+    #Создаем файл, если его нет
+    ensure_file_exists(input_file)
     while True:
         if not ask_start():
             continue
